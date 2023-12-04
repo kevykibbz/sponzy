@@ -27,5 +27,8 @@ class AppServiceProvider extends ServiceProvider
     {
         Blade::withoutDoubleEncoding();
         Paginator::useBootstrap();
+        if(config('app.env') === 'production') {
+            \URL::forceScheme('https');
+        }
     }
 }
