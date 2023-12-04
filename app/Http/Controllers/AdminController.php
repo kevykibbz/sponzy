@@ -614,8 +614,13 @@ class AdminController extends Controller
 			'max_subscription_amount' => 'required|numeric|min:1',
 			'stripe_connect_countries' => Rule::requiredIf($request->stripe_connect == 1)
 		];
-
+		
+		$messages = [
+			'stripe_connect_countries.required_if' => 'The Stripe Connect Countries field is required when Stripe Connect is enabled.'
+		];
+		
 		$this->validate($request, $rules, $messages);
+		
 
 		if (isset($request->stripe_connect_countries)) {
 			$stripeConnectCountries = implode(',', $request->stripe_connect_countries);
