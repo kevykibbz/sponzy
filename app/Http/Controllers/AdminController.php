@@ -637,7 +637,7 @@ class AdminController extends Controller
 		$sql->referral_transaction_limit  = $request->referral_transaction_limit;
 		$sql->amount_min_withdrawal    = $request->amount_min_withdrawal;
 		$sql->amount_max_withdrawal    = $request->amount_max_withdrawal;
-		$sql->specific_day_payment_withdrawals = $request->specific_day_payment_withdrawals;
+		$sql->specific_day_payment_withdrawals = $request->specific_day_payment_withdrawals ?? "2";
 		$sql->days_process_withdrawals = $request->days_process_withdrawals;
 		$sql->type_withdrawals = $request->type_withdrawals;
 		$sql->payout_method_paypal = $request->payout_method_paypal;
@@ -651,7 +651,8 @@ class AdminController extends Controller
 		$sql->tax_on_wallet = $request->tax_on_wallet;
 		$sql->wallet_format = $request->wallet_format;
 		$sql->stripe_connect = $request->stripe_connect;
-		$sql->stripe_connect_countries = $stripeConnectCountries ?? null;
+		$sql->stripe_connect_countries = $stripeConnectCountries ?? 'Kenya';
+
 
 		$sql->save();
 
