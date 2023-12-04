@@ -102,13 +102,23 @@ class AdminController extends Controller
 
 		$dataChartSubscriptions = implode(',', $allDataSubscriptions);
 
-		// $totalUsers = User::selectRaw('COUNT(`id`) as `total`')->pluck('total')->first();
-		// $total_subscriptions = Subscriptions::selectRaw('COUNT(id) as total')->pluck('total')->first();
-		// $total_posts = Updates::selectRaw('COUNT(`id`) as `total`')->pluck('total')->first();
+		$totalUsers = User::selectRaw('id, COUNT(id) as total')
+			->groupBy('id')
+			->pluck('total')
+			->first();
 
-		$totalUsers = User::count();
-		$total_subscriptions = Subscriptions::count();
-		$total_posts = Updates::count();
+		$total_subscriptions = Subscriptions::selectRaw('COUNT(id) as total')
+			->pluck('total')
+			->first();
+
+		$total_posts = Updates::selectRaw('COUNT(id) as total')
+			->pluck('total')
+			->first();
+
+
+		// $totalUsers = User::count();
+		// $total_subscriptions = Subscriptions::count();
+		// $total_posts = Updates::count();
 
 
 		$users = User::select(['id', 'username', 'avatar', 'name', 'status', 'date'])
