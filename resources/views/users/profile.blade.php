@@ -753,6 +753,7 @@
       </div><!-- Modal reportCreator -->
     @endif
 
+    
     @if (auth()->check() && auth()->id() != $user->id && ! $checkSubscription  && $user->verified_id == 'yes')
 
     @if ($user->free_subscription == 'no')
@@ -1230,8 +1231,6 @@ document.addEventListener('DOMContentLoaded', function () {
     }
     
 </script>
-
-
 @endsection
 @php session()->forget('subscription_cancel') @endphp
 @php session()->forget('subscription_success') @endphp
