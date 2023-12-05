@@ -191,6 +191,7 @@ Route::get('verify/account/{confirmation_code}', [HomeController::class, 'getVer
 
 		// Paypal IPN (PPV)
 	  Route::post('paypal/ppv/ipn', [PayPerViewController::class, 'paypalPPVIpn']);
+	  Route::post('lnmo/ppv/ipn', [PayPerViewController::class, 'mpesaPPVIpn'])->name('mpesaPPVIpn');
 
  /*
   |-----------------------------------
