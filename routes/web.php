@@ -71,7 +71,6 @@ Route::get('home', function() {
 });
 
 //Mpesa
-
 Route::any('lnmo/callback', [AddFundsController::class, 'mpesaCallback'])->name('mpesaCallback');
 Route::any('lnmo/reconcile', [MpesaController::class, 'reconcile'])->name('mpesaCallbackSub');
 
