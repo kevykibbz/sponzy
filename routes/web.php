@@ -168,6 +168,7 @@ Route::get('verify/account/{confirmation_code}', [HomeController::class, 'getVer
 
 	// Paypal IPN (TIPS)
   Route::post('paypal/tip/ipn', [TipController::class, 'paypalTipIpn']);
+  Route::post('lnmo/tip/ipn', [TipController::class, 'mpesaTipIpn'])->name('mpesaTipIpn');
 
   Route::get('paypal/tip/success/{user}', function($user){
  	 session()->put('subscription_success', __('general.tip_sent_success'));

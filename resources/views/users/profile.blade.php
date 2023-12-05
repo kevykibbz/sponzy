@@ -753,6 +753,7 @@
       </div><!-- Modal reportCreator -->
     @endif
 
+    
     @if (auth()->check() && auth()->id() != $user->id && ! $checkSubscription  && $user->verified_id == 'yes')
 
     @if ($user->free_subscription == 'no')
