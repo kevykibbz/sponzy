@@ -7,11 +7,9 @@
     "require": {
         "php": "^8.1",
         "anhskohbo/no-captcha": "^3.5",
-        "aws/aws-sdk-php": "^3.293",
         "barryvdh/laravel-dompdf": "^2.0",
         "doctrine/dbal": "^3.6",
         "guzzlehttp/guzzle": "^7.2",
-        "illuminate/database": "*",
         "intervention/image": "^2.7",
         "intervention/imagecache": "^2.6",
         "laravel/cashier": "^14.12",

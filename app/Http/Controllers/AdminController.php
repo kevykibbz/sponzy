@@ -102,24 +102,9 @@ class AdminController extends Controller
 
 		$dataChartSubscriptions = implode(',', $allDataSubscriptions);
 
-		$totalUsers = User::selectRaw('id, COUNT(id) as total')
-			->groupBy('id')
-			->pluck('total')
-			->first();
-
-		$total_subscriptions = Subscriptions::selectRaw('COUNT(id) as total')
-			->pluck('total')
-			->first();
-
-		$total_posts = Updates::selectRaw('COUNT(id) as total')
-			->pluck('total')
-			->first();
-
-
-		// $totalUsers = User::count();
-		// $total_subscriptions = Subscriptions::count();
-		// $total_posts = Updates::count();
-
+		$totalUsers = User::selectRaw('COUNT(`id`) as `total`')->pluck('total')->first();
+		$total_subscriptions = Subscriptions::selectRaw('COUNT(id) as total')->pluck('total')->first();
+		$total_posts = Updates::selectRaw('COUNT(`id`) as `total`')->pluck('total')->first();
 
 		$users = User::select(['id', 'username', 'avatar', 'name', 'status', 'date'])
 			->orderBy('id', 'DESC')
@@ -614,13 +599,8 @@ class AdminController extends Controller
 			'max_subscription_amount' => 'required|numeric|min:1',
 			'stripe_connect_countries' => Rule::requiredIf($request->stripe_connect == 1)
 		];
-		
-		$messages = [
-			'stripe_connect_countries.required_if' => 'The Stripe Connect Countries field is required when Stripe Connect is enabled.'
-		];
-		
+
 		$this->validate($request, $rules, $messages);
-		
 
 		if (isset($request->stripe_connect_countries)) {
 			$stripeConnectCountries = implode(',', $request->stripe_connect_countries);
@@ -642,7 +622,7 @@ class AdminController extends Controller
 		$sql->referral_transaction_limit  = $request->referral_transaction_limit;
 		$sql->amount_min_withdrawal    = $request->amount_min_withdrawal;
 		$sql->amount_max_withdrawal    = $request->amount_max_withdrawal;
-		$sql->specific_day_payment_withdrawals = $request->specific_day_payment_withdrawals ?? "2";
+		$sql->specific_day_payment_withdrawals = $request->specific_day_payment_withdrawals;
 		$sql->days_process_withdrawals = $request->days_process_withdrawals;
 		$sql->type_withdrawals = $request->type_withdrawals;
 		$sql->payout_method_paypal = $request->payout_method_paypal;
@@ -656,8 +636,7 @@ class AdminController extends Controller
 		$sql->tax_on_wallet = $request->tax_on_wallet;
 		$sql->wallet_format = $request->wallet_format;
 		$sql->stripe_connect = $request->stripe_connect;
-		$sql->stripe_connect_countries = $stripeConnectCountries ?? 'Kenya';
-
+		$sql->stripe_connect_countries = $stripeConnectCountries ?? null;
 
 		$sql->save();
 
