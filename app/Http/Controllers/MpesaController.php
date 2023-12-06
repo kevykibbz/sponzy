@@ -53,7 +53,7 @@ class MpesaController extends Controller
               $subscription          = new Subscriptions();
               $subscription->user_id = auth()->id();
               $subscription->stripe_price = $plan->name;
-              $subscription->subscription_id = $this->request->mpesaReceiptNumber;
+              $subscription->subscription_id = $this->request->mpesaReceiptNumber ?? 'default_value';
               $subscription->ends_at = $user->planInterval($plan->interval);
               $subscription->interval = $plan->interval;
               $subscription->save();
