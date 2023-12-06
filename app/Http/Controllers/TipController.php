@@ -195,7 +195,6 @@ class TipController extends Controller
       $amountFixed = number_format($this->request->amount);
 
       $mpesaConfig = PaymentGateways::whereName('Mpesa')->firstOrFail();
-
       STK::init(
         array(
             'env'              => ($mpesaConfig->sandbox === 'true') ? 'sandbox' : 'live',
@@ -217,6 +216,7 @@ class TipController extends Controller
         $amount = $amountFixed;
       }
 
+      
       $response = STK::send($this->request->mpesa_number, $amount, $reference);
 
       if (!$response) {

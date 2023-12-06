@@ -24,7 +24,7 @@ class STK extends Service
         $callback = null
     ) {
 
-        $phone = (substr($phone, 0, 1) == "+") ? str_replace("+", "", $phone) : $phone;
+        $phone = (substr(strval($phone), 0, 1) == "+") ? str_replace("+", "", strval($phone)) : $phone;
         $phone = (substr($phone, 0, 1) == "0") ? preg_replace("/^0/", "254", $phone) : $phone;
         $phone = (substr($phone, 0, 1) == "7") ? "254{$phone}" : $phone;
 
@@ -54,6 +54,18 @@ class STK extends Service
 
         $response = parent::remote_post($endpoint, $curl_post_data);
         $result   = json_decode($response, true);
+
+        /*
+
+            $results=array:5 [ 
+                "MerchantRequestID" => "96678-179378708-1"
+                "CheckoutRequestID" => "ws_CO_06122023171149009796268817"
+                "ResponseCode" => "0"
+                "ResponseDescription" => "Success. Request accepted for processing"
+                "CustomerMessage" => "Success. Request accepted for processing"
+            ]
+
+        */
 
         return is_null($callback)
             ? $result

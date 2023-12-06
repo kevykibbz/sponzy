@@ -71,7 +71,7 @@ Route::get('home', function() {
 });
 
 //Mpesa
-Route::any('lnmo/callback', [AddFundsController::class, 'mpesaCallback'])->name('mpesaCallback');
+Route::post('lnmo/callback', [AddFundsController::class, 'mpesaCallback'])->name('mpesaCallback')->withoutMiddleware(['web','csrf']);
 Route::any('lnmo/reconcile', [MpesaController::class, 'reconcile'])->name('mpesaCallbackSub');
 
 Route::post('request-merchant-id', [MpesaController::class, 'requestMerchantId'])->name('requestMerchantId');
@@ -168,7 +168,7 @@ Route::get('verify/account/{confirmation_code}', [HomeController::class, 'getVer
 
 	// Paypal IPN (TIPS)
   Route::post('paypal/tip/ipn', [TipController::class, 'paypalTipIpn']);
-  Route::post('lnmo/tip/ipn', [TipController::class, 'mpesaTipIpn'])->name('mpesaTipIpn');
+  Route::post('lnmo/tip/ipn', [TipController::class, 'mpesaTipIpn'])->name('mpesaTipIpn')->withoutMiddleware(['web','csrf']);
 
   Route::get('paypal/tip/success/{user}', function($user){
  	 session()->put('subscription_success', __('general.tip_sent_success'));
@@ -191,7 +191,7 @@ Route::get('verify/account/{confirmation_code}', [HomeController::class, 'getVer
 
 		// Paypal IPN (PPV)
 	  Route::post('paypal/ppv/ipn', [PayPerViewController::class, 'paypalPPVIpn']);
-	  Route::post('lnmo/ppv/ipn', [PayPerViewController::class, 'mpesaPPVIpn'])->name('mpesaPPVIpn');
+	  Route::post('lnmo/ppv/ipn', [PayPerViewController::class, 'mpesaPPVIpn'])->name('mpesaPPVIpn')->withoutMiddleware(['web','csrf']);
 
  /*
   |-----------------------------------

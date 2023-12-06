@@ -50,7 +50,7 @@ class MpesaController extends Controller
                  ->firstOrFail();
         
             
-              $subscription          = new Subscriptions();
+              $subscription = new Subscriptions();
               $subscription->user_id = auth()->id();
               $subscription->stripe_price = $plan->name;
               $subscription->subscription_id = $this->request->mpesaReceiptNumber;
