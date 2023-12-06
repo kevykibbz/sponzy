@@ -1226,7 +1226,13 @@ class AddFundsController extends Controller
 
     public function mpesaCallback(Request $request)
     {
+      // Log the incoming data to a log.txt file
+      $logFilePath = storage_path('app/log/log.txt');
+      $logData = json_encode($request->all());
+      file_put_contents($logFilePath, $logData . PHP_EOL, FILE_APPEND);
+
       $response = isset($request['Body']) ? $request['Body'] : [];
+      //$response = $request->input('Body', []);
 
       if ($response != null && $response['stkCallback']['MerchantRequestID'] != null) {
           $merchantRequestID      = $response['stkCallback']['MerchantRequestID'];
