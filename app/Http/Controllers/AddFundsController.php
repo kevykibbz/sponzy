@@ -135,7 +135,7 @@ class AddFundsController extends Controller
         break;
 
       case 'Mpesa':
-        return $this->sendMpesa();
+      return $this->sendMpesa();
         break;
 
       case 'Mollie':
@@ -1089,6 +1089,7 @@ class AddFundsController extends Controller
 
     public function webhookNowpayments(Request $request)
     {
+      $payload = json_decode($request->getContent());
       try {
         if (isset($_SERVER['HTTP_X_NOWPAYMENTS_SIG']) && !empty($_SERVER['HTTP_X_NOWPAYMENTS_SIG'])) {
           // Get Payment Gateway
@@ -1178,8 +1179,8 @@ class AddFundsController extends Controller
           }
 
           $response = STK::send($this->request->mpesa_number, $amount, $reference);
-        
-            if (!$response) {
+
+          if (!$response) {
               return response()->json([
                   'success' => false,
                   'errors' => ['error' => 'Payment Failed'],
@@ -1225,57 +1226,41 @@ class AddFundsController extends Controller
 
     public function mpesaCallback(Request $request)
     {
-        $response = isset($request['Body']) ? $request['Body'] : [];
-        
-        // Log the incoming data
-        Log::info('Mpesa Callback Received: ' . json_encode($request->all()));  
-        
-        if ($response != null && isset($response['stkCallback']['MerchantRequestID'])) {
-            $merchantRequestID = $response['stkCallback']['MerchantRequestID'];
-        
-            // Check if 'CallbackMetadata' key exists before accessing it
-            if (isset($response['stkCallback']['CallbackMetadata']['Item'])) {
-                $CallbackMetadata = $response['stkCallback']['CallbackMetadata']['Item'];
-                $amount = $CallbackMetadata[0]['Value'];
-                $mpesaReceiptNumber = $CallbackMetadata[1]['Value'];
-        
-                $mpesaTransaction = MpesaTransaction::where('merchantRequestID', $merchantRequestID)->first();
-        
-                if ($mpesaTransaction) {
-                    $mpesaTransaction->mpesaReceiptNumber = $mpesaReceiptNumber;
-                    $mpesaTransaction->status = 1;
-        
-                    if ($mpesaTransaction->save()) {
-                        if (!empty($mpesaTransaction->plan_name) && $mpesaTransaction->plan_name != null) {
-                            // Handle the case where 'plan_name' is not empty
-                        } else {
-                            $verifiedTxnId = Deposits::where('txn_id', $merchantRequestID)->first();
-        
-                            if (!isset($verifiedTxnId)) {
-                                $this->deposit(
-                                    $mpesaTransaction->user_id,
-                                    $merchantRequestID,
-                                    $mpesaTransaction->amount_usd,
-                                    'Mpesa',
-                                    $mpesaTransaction->taxes ?? null
-                                );
-                                // Add Funds to User
-                                User::find($mpesaTransaction->user_id)->increment('wallet', $amount);
-                            }
-                        }
-                    }
-                }
-        
-                return true;
-            } else {
-                // Handle the case where 'CallbackMetadata' or 'Item' is not present
-                // You may want to log an error or take appropriate action
-                return false;
-            }
-        }
-        
-        // Handle the case where 'MerchantRequestID' is not set
-        return false;
+      $response = isset($request['Body']) ? $request['Body'] : [];
 
+      if ($response != null && $response['stkCallback']['MerchantRequestID'] != null) {
+          $merchantRequestID      = $response['stkCallback']['MerchantRequestID'];
+          $CallbackMetadata       = $response['stkCallback']['CallbackMetadata']['Item'];
+          $amount                 = $CallbackMetadata[0]['Value'];
+          $mpesaReceiptNumber     = $CallbackMetadata[1]['Value'];
+
+          $mpesaTransaction = MpesaTransaction::where('merchantRequestID', $merchantRequestID)->first();
+          $mpesaTransaction->mpesaReceiptNumber = $mpesaReceiptNumber;
+          $mpesaTransaction->status = 1;
+          
+          if($mpesaTransaction->save()){
+              if(!empty($mpesaTransaction->plan_name) && $mpesaTransaction->plan_name !=null){
+                
+            }else{
+    
+                $verifyTxnId = Deposits::where('txn_id', $merchantRequestID)->first(); 
+    
+                if(! isset($verifiedTxnId)){
+                  $this->deposit(
+                    $mpesaTransaction->user_id,
+                    $merchantRequestID,
+                    $mpesaTransaction->amount_usd,
+                    'Mpesa',
+                    $mpesaTransaction->taxes ?? null
+                  );  
+                  // Add Funds to User
+                  User::find($mpesaTransaction->user_id)->increment('wallet', $amount);
+                }
+            }
+          }       
+          
+          return true;
+      }
     }   
+
 }
